@@ -6,8 +6,8 @@ const maps = require('./map');
 // redirect :id to specific webpage
 app.get('/:id', function (req, res) {
     const param = req.params.id;
-    console.log(param);
-    res.redirect(301, maps[param]);
+    const redirect_to = maps.map(({ title, url }) => { if (title == param) return url; });
+    res.redirect(301, redirect_to[0]);
 });
 
 app.listen(port);
