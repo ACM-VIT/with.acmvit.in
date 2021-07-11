@@ -1,7 +1,6 @@
 var admin = require("firebase-admin");
 var serviceAccount = require("process.env.CREDENTIALS");
 
-require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = 3000;
