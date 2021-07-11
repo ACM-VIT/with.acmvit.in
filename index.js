@@ -1,5 +1,6 @@
 var admin = require("firebase-admin");
-var serviceAccount = require("./GOOGLE_APPLICATION_CREDENTIALS.json");
+const config = require('config');
+const serviceAccount = config.get('CREDENTIALS');
 
 const express = require('express');
 const app = express();
