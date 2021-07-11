@@ -1,29 +1,74 @@
-var admin = require("firebase-admin");
-const config = require('config');
-const serviceAccount = config.get('CREDENTIALS');
+require("dotenv").config();
 
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = 3000;
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+/** load peer services */
+const { worker } = require("./firebase");
+const {
+  getMemory,
+  setMemory,
+  setMemoryArray,
+  triggerLastUpdated,
+  isMemoryEmpty,
+  clearMemory,
+} = require("./memory");
+
+/** route to return success on root */
+app.get("/", (req, res) => {
+  res.json({ success: true });
 });
 
-const db = admin.firestore();
-
-let get_data = async () => {
-    const collectionQuerySnapshot = await db.collection("domainKeys").doc('cdRsoDCvIcIt4MpEkVbR').get();
-    return collectionQuerySnapshot.data();
-}
-
-// redirect :id to specific webpage
-app.get('/:id', async function (req, res) {
-    const param = req.params.id;
-    const maps = get_data()
-    // const redirect_to = maps.map(({ title, url }) => { if (title == param) return url; });
-    res.redirect(301, maps[param]);
+/** to handle database updates and memory saves */
+app.get("/update", async (req, res) => {
+  try {
+    const routeMappings = await worker();
+    clearMemory();
+    setMemoryArray(routeMappings);
+    return res.json({ success: true });
+  } catch (e) {
+    return res.json({ success: false, error: e.message });
+  }
 });
 
-app.listen(port);
-console.log('Server started at http://localhost:' + port);
+/** to list all routes */
+app.get("/debug", (req, res) => {
+  return res.json(getMemory());
+});
+
+/** to accept an id in url param and call the service */
+app.get("/:id", async (req, res) => {
+  /** if memory is empty, then call database */
+
+  if (isMemoryEmpty()) {
+    try {
+      const routeMappings = await worker();
+      setMemoryArray(routeMappings);
+      console.log(getMemory());
+    } catch (e) {
+      return res.json({ success: false, error: e.message });
+    }
+  }
+
+  /** get id from URL param */
+  const { id } = req.params;
+
+  /** loop over all routes stored in memory and see if key matches */
+  const routes = getMemory();
+
+  try {
+    if (routes[id]) {
+      return res.status(301).redirect(routes[id]);
+    }
+  } catch (e) {
+    return res.json({ success: false, error: e.message });
+  }
+
+  return res.json({ success: "looks like you're lost :(" });
+});
+
+/** listen for connections */
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
