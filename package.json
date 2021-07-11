@@ -10,10 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "firebase-admin": "^9.10.0",
-    "firebase-functions": "^3.14.1"
   },
   "devDependencies": {
     "eslint": "^7.30.0",
