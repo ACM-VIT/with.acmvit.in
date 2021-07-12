@@ -1,8 +1,9 @@
 // var admin = require("firebase-admin");
-const config = require("config");
+// const config = require("config");
 // const serviceAccount = config.get('CREDENTIALS');
 
 const express = require("express");
+const maps = require("./map");
 const app = express();
 const port = 3000;
 
@@ -20,14 +21,21 @@ const port = 3000;
 //   return collectionQuerySnapshot.data();
 // };
 
+app.get("", (req, res) => {
+  res.redirect("https://bootcamp.acmvit.in/");
+});
+
 // redirect :id to specific webpage
 app.get("/:id", async function (req, res) {
   const param = req.params.id;
-  const maps = get_data();
-  const redirect_to = maps.map(({ title, url }) => {
+  let redirect_to = maps.map(({ title, url }) => {
     if (title == param) return url;
   });
-  // res.redirect(301, maps[param]);
+
+  if (redirect_to[0] === undefined) {
+    redirect_to = `https://bootcamp.acmvit.in/`;
+  }
+
   return res.redirect(301, redirect_to);
 });
 
