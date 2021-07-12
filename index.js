@@ -1,43 +1,77 @@
-// var admin = require("firebase-admin");
-// const config = require("config");
-// const serviceAccount = config.get('CREDENTIALS');
+require("dotenv").config();
+
 
 const express = require("express");
 const maps = require("./map");
 const app = express();
 const port = 3000;
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
 
-// const db = admin.firestore();
+/** load peer services */
+const { worker } = require("./firebase");
+const {
+  getMemory,
+  setMemory,
+  setMemoryArray,
+  triggerLastUpdated,
+  isMemoryEmpty,
+  clearMemory,
+} = require("./memory");
 
-// let get_data = async () => {
-//   const collectionQuerySnapshot = await db
-//     .collection("domainKeys")
-//     .doc("cdRsoDCvIcIt4MpEkVbR")
-//     .get();
-//   return collectionQuerySnapshot.data();
-// };
-
-app.get("", (req, res) => {
-  res.redirect("https://bootcamp.acmvit.in/");
+/** route to return success on root */
+app.get("/", (req, res) => {
+  res.json({ success: true });
 });
 
-// redirect :id to specific webpage
-app.get("/:id", async function (req, res) {
-  const param = req.params.id;
-  let redirect_to = maps.map(({ title, url }) => {
-    if (title == param) return url;
-  });
+/** to handle database updates and memory saves */
+app.get("/update", async (req, res) => {
+  try {
+    const routeMappings = await worker();
+    clearMemory();
+    setMemoryArray(routeMappings);
+    return res.json({ success: true });
+  } catch (e) {
+    return res.json({ success: false, error: e.message });
+  }
+});
 
-  if (redirect_to[0] === undefined) {
-    redirect_to = `https://bootcamp.acmvit.in/`;
+/** to list all routes */
+app.get("/debug", (req, res) => {
+  return res.json(getMemory());
+});
+
+/** to accept an id in url param and call the service */
+app.get("/:id", async (req, res) => {
+  /** if memory is empty, then call database */
+
+  if (isMemoryEmpty()) {
+    try {
+      const routeMappings = await worker();
+      setMemoryArray(routeMappings);
+      console.log(getMemory());
+    } catch (e) {
+      return res.json({ success: false, error: e.message });
+    }
   }
 
-  return res.redirect(301, redirect_to);
+  /** get id from URL param */
+  const { id } = req.params;
+
+  /** loop over all routes stored in memory and see if key matches */
+  const routes = getMemory();
+
+  try {
+    if (routes[id]) {
+      return res.status(301).redirect(routes[id]);
+    }
+  } catch (e) {
+    return res.json({ success: false, error: e.message });
+  }
+
+  return res.json({ success: "looks like you're lost :(" });
 });
 
-app.listen(port);
-console.log("Server started at http://localhost:" + port);
+/** listen for connections */
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
