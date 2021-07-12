@@ -1,4 +1,4 @@
-var admin = require("firebase-admin");
+// var admin = require("firebase-admin");
 const config = require("config");
 // const serviceAccount = config.get('CREDENTIALS');
 
@@ -24,8 +24,11 @@ const port = 3000;
 app.get("/:id", async function (req, res) {
   const param = req.params.id;
   const maps = get_data();
-  // const redirect_to = maps.map(({ title, url }) => { if (title == param) return url; });
-  res.redirect(301, maps[param]);
+  const redirect_to = maps.map(({ title, url }) => {
+    if (title == param) return url;
+  });
+  // res.redirect(301, maps[param]);
+  return res.redirect(301, redirect_to);
 });
 
 app.listen(port);
