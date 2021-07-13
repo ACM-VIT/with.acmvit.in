@@ -5,6 +5,11 @@ const maps = require("./map");
 const app = express();
 const port = 3000;
 
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-cache");
+  next();
+});
+
 // /** load peer services */
 // const { worker } = require("./firebase");
 // const {
@@ -18,8 +23,8 @@ const port = 3000;
 
 /** route to return success on root */
 app.get("/", (req, res) => {
-  res.status(301).redirect("https://bootcamp.acmvit.in");
-  return res.json({ success: true });
+  console.log("visited root");
+  return res.status(301).redirect("https://youtu.be/s7UR06BW5LY");
 });
 
 /** to handle database updates and memory saves */
@@ -40,7 +45,7 @@ app.get("/", (req, res) => {
 // });
 
 /** to accept an id in url param and call the service */
-app.get("/:id", async (req, res) => {
+app.get("/:id", (req, res) => {
   /** if memory is empty, then call database */
 
   // if (isMemoryEmpty()) {
@@ -66,12 +71,12 @@ app.get("/:id", async (req, res) => {
   // } catch (e) {
   //   return res.json({ success: false, error: e.message });
   // }
-  const redirect_to = maps.map(({ title, url }) => {
+  const redirect_to = maps.find(({ title, url }) => {
     if (title == param) return url;
   });
 
   console.log(redirect_to);
-  res.status(301).redirect(redirect_to);
+  return res.status(301).redirect(redirect_to.url);
   // return res.json({ success: "looks like you're lost :(" });
 });
 
