@@ -71,13 +71,15 @@ app.get("/:id", (req, res) => {
   // } catch (e) {
   //   return res.json({ success: false, error: e.message });
   // }
-  const redirect_to = maps.find(({ title, url }) => {
+  let redirect_to = maps.find(({ title, url }) => {
     if (title == param) return url;
   });
 
-  console.log(redirect_to);
+  if (redirect_to === undefined) {
+    redirect_to = { url: "https://bootcamp.acmvit.in" };
+  }
+
   return res.status(301).redirect(redirect_to.url);
-  // return res.json({ success: "looks like you're lost :(" });
 });
 
 /** listen for connections */
