@@ -13,4 +13,4 @@ const maps = [
   },
 ];
 
-module.exports = maps;
+module.exports = { maps };
