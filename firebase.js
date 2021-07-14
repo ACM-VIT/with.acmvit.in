@@ -14,6 +14,11 @@ const serviceAccountObject = {
   client_x509_cert_url: process.env.CERT_URL,
 };
 
+const config = {
+  collection: "domainKeys",
+  document: "cdRsoDCvIcIt4MpEkVbR",
+};
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountObject),
 });
@@ -32,7 +37,7 @@ const worker = async () => {
   const routes = [];
 
   /** get the firestore collection */
-  const snapshot = await db.collection("keys").doc("data_entries");
+  const snapshot = await db.collection(config.collection).doc(config.document);
 
   /** get the document from the collection */
   const maps = await snapshot.get().then((doc) => doc.data());
