@@ -24,7 +24,9 @@ app.use((req, res, next) => {
 /** route to return success on root */
 app.get("/", (req, res) => {
   console.log("visited root");
-  return res.status(301).redirect("https://youtu.be/s7UR06BW5LY");
+  return res
+    .status(301)
+    .redirect("https://www.youtube.com/watch?v=4oGzfT81fIE");
 });
 
 /** to handle database updates and memory saves */
@@ -76,7 +78,7 @@ app.get("/:id", (req, res) => {
   });
 
   if (redirect_to === undefined) {
-    redirect_to = { url: "https://bootcamp.acmvit.in" };
+    redirect_to = { url: "https://www.youtube.com/watch?v=4oGzfT81fIE" };
   }
 
   return res.status(301).redirect(redirect_to.url);
