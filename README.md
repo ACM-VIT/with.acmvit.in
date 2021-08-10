@@ -18,7 +18,7 @@ A realtime url shortner
 ---
 
 with.acmvit.in was created to give the lengthy, messed up URLs a simple and a professional look<br>
-This project is written in javascripted and is hosted as a serverless function on vercel<br>
+This project is written in javascript and is hosted as a serverless function on vercel<br>
 Firebase was used to store the URLs for each route to redirect the user to the target URL.
 
 ---
