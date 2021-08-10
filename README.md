@@ -48,7 +48,7 @@ vercel            # start the build and deploy to vercel
 ## Authors
 
 **Contributors:** [Swarup Kharul](https://github.com/SwarupKharul), [Srinivas V](https://github.com/cr-trojan23)
-**Mentors:** [Yash Kumar Verma](https://github.com/YashKumarVerma), [Shreyash K](https://github.com/HelixW)
+
 
 ## License
 Distributed under the MIT license. See LICENSE for more information.
