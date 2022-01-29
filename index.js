@@ -77,7 +77,7 @@ app.get("/:id", async (req, res) => {
   console.log("redirecting to", redirectTarget);
 
   if (redirectTarget === undefined) {
-    redirectTarget = { url: "https://bootcamp.acmvit.in" };
+    redirectTarget = { url: "https://acmvit.in" };
   }
 
   return res.json(redirectTarget);
