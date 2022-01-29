@@ -23,7 +23,7 @@ const {
 /** route to return success on root */
 app.get("/", (req, res) => {
   console.log("visited root");
-  return res.status(301).redirect("http://bootcamp.acmvit.in");
+  return res.status(301).redirect("https://acmvit.in");
 });
 
 /** to handle database updates and memory saves */
@@ -77,7 +77,7 @@ app.get("/:id", async (req, res) => {
   console.log("redirecting to", redirectTarget);
 
   if (redirectTarget === undefined) {
-    redirectTarget = { url: "https://bootcamp.acmvit.in" };
+    redirectTarget = { url: "https://acmvit.in" };
   }
 
   return res.json(redirectTarget);
