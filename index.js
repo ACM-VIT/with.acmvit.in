@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const express = require("express");
-// const {maps} = require("./map");
 const app = express();
 const port = 3000;
 
@@ -24,7 +23,7 @@ const {
 /** route to return success on root */
 app.get("/", (req, res) => {
   console.log("visited root");
-  return res.status(301).redirect("http://bootcamp.acmvit.in");
+  return res.status(301).redirect("https://acmvit.in");
 });
 
 /** to handle database updates and memory saves */
